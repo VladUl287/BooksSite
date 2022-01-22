@@ -9,6 +9,7 @@
 
     --main-color: #f8fcff;
     --main-gray: #ffffff80;
+    --error: red;
 }
 
 .forms {
@@ -68,6 +69,27 @@ form input[type=text] {
 
 form input[type=text]::placeholder {
     user-select: none;
+}
+
+form input[type=text].validate-error {
+    border-bottom-color: var(--error);
+}
+
+form input[type=text].validate-error::placeholder {
+    color: var(--error)
+}
+
+form > div {
+    position: relative;
+}
+
+form .text-error {
+    user-select: none;
+    position: absolute;
+    top: 100%;
+    left: .2em;
+    font-size: 11px;
+    color: var(--error);
 }
 
 form input[type=submit] {

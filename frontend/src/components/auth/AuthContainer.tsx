@@ -5,28 +5,32 @@ import { useState } from 'react';
 import { authService } from '../../services/authService';
 import { userLogin } from '../../redux/actions/authActions';
 import { useForm } from 'react-hook-form';
+import { IAuthModel } from '../../models/IAuthModel';
 
 const AuthContainer = () => {
-    
+
     const dispatch = useDispatch();
-    const { register, handleSubmit } = useForm();
-
-    // const [email, setEmail] = useState('');
-    // const [login, setLogin] = useState('');
-    const [toggle, setToggle] = useState(true);
-    // const [password, setPassword] = useState('');
-
     const navigate = useNavigate();
+    const [toggle, setToggle] = useState(true);
+    
+    const { 
+        register, 
+        handleSubmit,
+        reset,
+        formState: { errors } } = useForm();
+    const { 
+        register: login, 
+        handleSubmit: handleSubmitLogin, 
+        formState: { errors: errorsLogin } } = useForm();
 
-    const submitLogin = (data: { email: string, password: string}) => {
+    const submitLogin = (data: IAuthModel) => {
         dispatch(userLogin(data.email, data.password, navigate));
     }
 
-    const submitRegister = async (data: { email: string, login: string, password: string}) => {
-
+    const submitRegister = async (data: IAuthModel) => {
         await authService.register(data.email, data.login, data.password);
-        
         setToggle(false);
+        reset();
     }
 
     if (localStorage.getItem('token')) {
@@ -35,9 +39,13 @@ const AuthContainer = () => {
 
     return <Auth
         toggle={toggle}
+        setToggle={setToggle}
+        errorsLogin={errorsLogin}
+        login={login}
+        handleSubmitLogin={handleSubmitLogin}
+        errors={errors}
         register={register}
         handleSubmit={handleSubmit}
-        setToggle={setToggle}
         submitLogin={submitLogin}
         submitRegister={submitRegister}
     />;

@@ -1,7 +1,7 @@
-const Books = (props: any) => {
-    
+const Books = () => {
     return (
         <div>
+            Books
         </div>
     );
 }

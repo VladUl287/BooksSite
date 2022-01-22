@@ -56,7 +56,6 @@ namespace react_Api
 
             services.AddTransient<IUserRepository, UserRepository>();
             services.AddTransient<ITokenRepository, TokenRepository>();
-            services.AddTransient<IBookRepository, BookRepository>();
 
             services.AddSwaggerGen(opt =>
             {
@@ -121,7 +120,6 @@ namespace react_Api
 
             app.UseAuthentication();
             app.UseAuthorization();
-
 
             app.UseEndpoints(endpoints =>
             {

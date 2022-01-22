@@ -7,17 +7,16 @@ import { checkAuth } from './redux/actions/authActions';
 import AuthContainer from './components/auth/AuthContainer';
 import { Navigate, Route, Routes, useNavigate } from 'react-router-dom';
 import { loadingOff } from './redux/actions/appActions';
-import BooksContainer from './components/book/BooksContainer';
+import Books from './components/book/Books';
 
 const App = () => {
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  let { isAuth, isLoading } = useSelector((state: any) => state.appReducer);
+  let { authReducer, appReducer } = useSelector((state: any) => state);
 
   useEffect(() => {
-    let token = localStorage.getItem('token');
-    if (token) {
+    if (localStorage.getItem('token')) {
       dispatch(checkAuth());
     } else {
       dispatch(loadingOff());
@@ -25,14 +24,14 @@ const App = () => {
     }
   }, []);
 
-  if (isLoading) {
+  if (appReducer.isLoading) {
     return <div>Loading app...</div>
   }
 
   return (
     <div className="App">
-      {isAuth && <Navbar /> }
-      {console.log(isAuth)}
+      {authReducer.isAuth && <Navbar /> }
+      {console.log(authReducer.isAuth)}
       <Routes>
         <Route path="/home" element={
           <AuthGuard>
@@ -41,7 +40,7 @@ const App = () => {
         } />
         <Route path="/books" element={
           <AuthGuard>
-            <BooksContainer />
+            <Books />
           </AuthGuard>
         } />
         <Route path="/auth" element={<AuthContainer />}></Route>
@@ -51,9 +50,7 @@ const App = () => {
 }
 
 const AuthGuard = ({ children }: { children: JSX.Element }) => {
-  const token = localStorage.getItem('token');
-
-  if (!token) {
+  if (!localStorage.getItem('token')) {
     return <Navigate to="/auth" />;
   }
 

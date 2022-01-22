@@ -12,7 +12,6 @@ namespace react_Api.Database
 
         public DbSet<User> Users { get; set; }
         public DbSet<Token> Tokens { get; set; }
-        public DbSet<Book> Books { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -65,19 +64,6 @@ namespace react_Api.Database
                     .IsRequired();
 
                 build.HasIndex(e => e.RefreshToken);
-            });
-
-            modelBuilder.Entity<Book>(build =>
-            {
-                build.HasKey(e => e.Id);
-
-                build.Property(e => e.Name)
-                    .IsRequired()
-                    .HasMaxLength(250);
-
-                build.Property(e => e.Description)
-                    .IsRequired()
-                    .HasMaxLength(10000);
             });
         }
     }
