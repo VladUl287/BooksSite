@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { authService } from '../services/authService';
+import { authService } from './services/authService';
 
 export const BASE_URL = 'https://localhost:44346/';
 
@@ -25,6 +25,8 @@ instance.interceptors.response.use((config) => {
             localStorage.setItem('token', result.data.token);
             return instance.request(original);
         } catch {}
+    } else {
+        return Promise.reject(error);
     }
 });
 

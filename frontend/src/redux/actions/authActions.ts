@@ -1,8 +1,8 @@
-import { authService } from '../../services/authService';
+import { Dispatch } from 'react';
+import { authService } from '../../http/services/authService';
 import { LOGIN, LOGOUT } from '../types';
-import { loadingOff, loadingOn } from './appActions';
 
-export const userLogin = (email: string, password: string, navigate: Function) => async (dispatch: Function) => {
+export const userLogin = (email: string, password: string) => async (dispatch: Function) => {
     let result = await authService.login(email, password);
     if (result.status === 200) {
         localStorage.setItem('token', result.data.token);
@@ -13,8 +13,6 @@ export const userLogin = (email: string, password: string, navigate: Function) =
                 token: result.data.token,
             }
         });
-
-        navigate('/');
     }
 }
 
@@ -28,8 +26,7 @@ export const userLogout = () => async (dispatch: Function) => {
     }
 }
 
-export const checkAuth = () => async (dispatch: Function) => {
-    dispatch(loadingOn());
+export const checkAuth = () => async (dispatch: Dispatch<any>) => {
     try {
         const result = await authService.refresh();
         localStorage.setItem('token', result.data.token);
@@ -42,7 +39,5 @@ export const checkAuth = () => async (dispatch: Function) => {
         });
     } catch {
         localStorage.removeItem('token');
-    } finally {
-        dispatch(loadingOff());
     }
 }

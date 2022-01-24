@@ -1,5 +1,5 @@
 import { AxiosResponse } from "axios"
-import instance from "../http"
+import instance from "..";
 
 const getBooks = (): Promise<AxiosResponse<any>> => {
     return instance.get('api/books');

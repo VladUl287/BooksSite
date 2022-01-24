@@ -1,60 +1,39 @@
-import './App.css';
-import { useEffect } from 'react';
-import Home from './components/home/Home';
-import Navbar from './components/navbar/Navbar';
+import { AnyAction } from 'redux';
+import AppRoutes from './AppRoutes';
+import { IState } from './models/IState';
 import { useDispatch, useSelector } from 'react-redux';
+import { ThunkDispatch } from 'redux-thunk';
+import { FC, useEffect, useState } from 'react';
+import Navbar from './components/navbar/Navbar';
 import { checkAuth } from './redux/actions/authActions';
-import AuthContainer from './components/auth/AuthContainer';
-import { Navigate, Route, Routes, useNavigate } from 'react-router-dom';
-import { loadingOff } from './redux/actions/appActions';
-import Books from './components/book/Books';
 
-const App = () => {
+export type AppDispatch = ThunkDispatch<IState, any, AnyAction>
 
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-  let { authReducer, appReducer } = useSelector((state: any) => state);
+const App: FC = () => {
+  const dispatch: AppDispatch = useDispatch();
+  const isAuth = useSelector((state: IState) => state.auth.isAuth);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (localStorage.getItem('token')) {
-      dispatch(checkAuth());
+      dispatch(checkAuth())
+        .then(() => setLoading(false))
+        .catch(() => setLoading(false));
     } else {
-      dispatch(loadingOff());
-      navigate('/auth');
+      setLoading(false)
     }
   }, []);
 
-  if (appReducer.isLoading) {
+  if (loading) {
     return <div>Loading app...</div>
   }
 
   return (
     <div className="App">
-      {authReducer.isAuth && <Navbar /> }
-      {console.log(authReducer.isAuth)}
-      <Routes>
-        <Route path="/home" element={
-          <AuthGuard>
-            <Home />
-          </AuthGuard>
-        } />
-        <Route path="/books" element={
-          <AuthGuard>
-            <Books />
-          </AuthGuard>
-        } />
-        <Route path="/auth" element={<AuthContainer />}></Route>
-      </Routes>
+      {  isAuth && <Navbar /> }
+      <AppRoutes isAuth />
     </div>
   );
-}
-
-const AuthGuard = ({ children }: { children: JSX.Element }) => {
-  if (!localStorage.getItem('token')) {
-    return <Navigate to="/auth" />;
-  }
-
-  return children;
 }
 
 export default App;

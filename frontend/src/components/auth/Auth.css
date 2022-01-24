@@ -51,7 +51,7 @@
 
 form div {
     margin: 0 0 1.5em 0;
-} 
+}
 
 form input {
     font-size: medium;
@@ -79,7 +79,7 @@ form input[type=text].validate-error::placeholder {
     color: var(--error)
 }
 
-form > div {
+form>div {
     position: relative;
 }
 
@@ -92,11 +92,35 @@ form .text-error {
     color: var(--error);
 }
 
-form input[type=submit] {
-    border-radius: 1em;
+form button {
+    min-width: 100px;
+    border-radius: 2em;
     padding: .3em 1.5em;
     border: none;
     display: block;
     margin: 0 auto;
     cursor: pointer;
+    font-size: medium;
+}
+
+.loading {
+    display: block;
+    margin: 0 auto;
+    width: 1.5em;
+    height: 1.5em;
+    border-radius: 50%;
+    color: #3c50fa;
+    border: 2px solid currentColor;
+    border-color: currentColor transparent;
+    animation: loading 1s ease infinite;
+}
+
+@keyframes loading {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
 }

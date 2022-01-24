@@ -5,10 +5,10 @@ import { LOGIN, LOGOUT } from '../types';
 
 const initialState = {
     user: {} as IUser,
-    isAuth: false
+    isAuth: false,
 }
 
-export const authReducer = (state = initialState, action: { type: string, payload: any }) => {
+export const authReducer = (state = initialState, action: { type: string, payload: { token: string } }) => {
     const { type, payload } = action;
     switch (type) {
         case LOGIN:

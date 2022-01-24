@@ -1,54 +1,78 @@
 import Auth from './Auth';
 import { Navigate, useNavigate } from 'react-router';
 import { useDispatch } from 'react-redux';
-import { useState } from 'react';
-import { authService } from '../../services/authService';
+import { FC, useState } from 'react';
 import { userLogin } from '../../redux/actions/authActions';
 import { useForm } from 'react-hook-form';
-import { IAuthModel } from '../../models/IAuthModel';
+import { authService } from '../../http/services/authService';
+import { FormValues } from './AuthTypes';
+import { AppDispatch } from '../../App';
+import { useToasts } from 'react-toast-notifications';
 
-const AuthContainer = () => {
+const AuthContainer: FC = () => {
 
-    const dispatch = useDispatch();
+    const dispatch: AppDispatch = useDispatch();
     const navigate = useNavigate();
+    const { addToast } = useToasts();
     const [toggle, setToggle] = useState(true);
-    
-    const { 
-        register, 
-        handleSubmit,
-        reset,
-        formState: { errors } } = useForm();
-    const { 
-        register: login, 
-        handleSubmit: handleSubmitLogin, 
-        formState: { errors: errorsLogin } } = useForm();
+    const [load, setLoad] = useState(false);
 
-    const submitLogin = (data: IAuthModel) => {
-        dispatch(userLogin(data.email, data.password, navigate));
+    const {
+        reset,
+        register,
+        handleSubmit,
+        formState: { errors } } = useForm<FormValues>();
+    const {
+        register: login,
+        handleSubmit: handleSubmitLogin,
+        formState: { errors: errorsLogin } } = useForm<FormValues>();
+
+    const submitLogin = (data: FormValues) => {
+        setLoad(true);
+        dispatch(userLogin(data.email, data.password))
+            .then(() => {
+                navigate('/home');
+            })
+            .catch((error: any) => {
+                addToast(error.response.data.error, {
+                    appearance: 'error'
+                });
+                setLoad(false);
+            });
     }
 
-    const submitRegister = async (data: IAuthModel) => {
-        await authService.register(data.email, data.login, data.password);
-        setToggle(false);
-        reset();
+    const submitRegister = async (data: FormValues) => {
+        try {
+            await authService.register(data.email, data.login, data.password);
+            setToggle(false);
+            reset();
+        } catch (error: any) {
+            addToast(error.response.data.error, {
+                appearance: 'error'
+            });
+        }
+
     }
 
     if (localStorage.getItem('token')) {
         return <Navigate to="/home" />
     }
 
-    return <Auth
-        toggle={toggle}
-        setToggle={setToggle}
-        errorsLogin={errorsLogin}
-        login={login}
-        handleSubmitLogin={handleSubmitLogin}
-        errors={errors}
-        register={register}
-        handleSubmit={handleSubmit}
-        submitLogin={submitLogin}
-        submitRegister={submitRegister}
-    />;
+    return (
+        <Auth
+            load={load}
+            toggle={toggle}
+            setToggle={setToggle}
+            errorsLogin={errorsLogin}
+            login={login}
+            handleSubmitLogin={handleSubmitLogin}
+            errors={errors}
+            register={register}
+            handleSubmit={handleSubmit}
+            submitLogin={submitLogin}
+            submitRegister={submitRegister}
+        />
+    );
 
 }
 

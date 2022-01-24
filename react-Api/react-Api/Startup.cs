@@ -11,7 +11,6 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using react_Api.Controllers;
 using react_Api.Database;
-using react_Api.Database.Interfaces;
 using react_Api.Database.Repositories;
 using System;
 using System.Text;
@@ -55,7 +54,6 @@ namespace react_Api
               });
 
             services.AddTransient<IUserRepository, UserRepository>();
-            services.AddTransient<ITokenRepository, TokenRepository>();
 
             services.AddSwaggerGen(opt =>
             {

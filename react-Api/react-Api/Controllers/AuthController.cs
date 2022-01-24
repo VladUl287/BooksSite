@@ -4,8 +4,9 @@ using react_Api.Services;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using react_Api.Database.Models;
-using react_Api.Database.Interfaces;
 using Microsoft.Extensions.Configuration;
+using react_Api.Database;
+using Microsoft.EntityFrameworkCore;
 
 namespace react_Api.Controllers
 {
@@ -13,19 +14,16 @@ namespace react_Api.Controllers
     [ApiController]
     public class AuthController : ControllerBase
     {
-        private readonly IUserRepository userRepository;
-        private readonly ITokenRepository tokenRepository;
+        private readonly DatabaseContext databaseContext;
         private readonly string passwordKey = string.Empty;
         private readonly string accessTokenKey = string.Empty;
         private readonly string refreshTokenKey = string.Empty;
 
         public AuthController(
-            IUserRepository userRepository,
-            ITokenRepository tokenRepository,
+            DatabaseContext databaseContext,
             IConfiguration configuration)
         {
-            this.userRepository = userRepository;
-            this.tokenRepository = tokenRepository;
+            this.databaseContext = databaseContext;
             passwordKey = configuration.GetValue<string>("Secrets:PasswordSecret");
             accessTokenKey = configuration.GetValue<string>("Secrets:JwtAccessSecret");
             refreshTokenKey = configuration.GetValue<string>("Secrets:JwtRefreshSecret");
@@ -34,14 +32,24 @@ namespace react_Api.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginModel login)
         {
-            var user = await userRepository.GetByEmail(login.Email);
+            var user = await databaseContext.Users
+                .AsNoTracking()
+                .Include(x => x.Role)
+                .FirstOrDefaultAsync(x => x.Email == login.Email);
+
             var hashPassword = HashService.Hash(login.Password, passwordKey);
 
             if (user is not null && user.Password == hashPassword)
             {
                 GenerateTokens(user, out string accessToken, out string refreshToken);
 
-                await tokenRepository.SaveToken(user.Id, refreshToken);
+                await databaseContext.Tokens
+                    .AddAsync(new Token
+                    {
+                        UserId = user.Id,
+                        RefreshToken = refreshToken
+                    });
+                await databaseContext.SaveChangesAsync();
 
                 Response.Cookies.Append("token", refreshToken, new Microsoft.AspNetCore.Http.CookieOptions
                 {
@@ -57,6 +65,14 @@ namespace react_Api.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegisterModel register)
         {
+            var exists = await databaseContext.Users
+                .AnyAsync(e => e.Email == register.Email);
+
+            if (exists)
+            {
+                return BadRequest(new { error = "Пользователь с таким email уже существует." });
+            }
+
             var user = new User
             {
                 Email = register.Email,
@@ -65,10 +81,10 @@ namespace react_Api.Controllers
                 RoleId = 2
             };
 
-            await userRepository.Create(user);
-            await userRepository.SaveChangesAsync();
+            await databaseContext.AddAsync(user);
+            await databaseContext.SaveChangesAsync();
 
-            return Ok(user);
+            return CreatedAtAction($"user/{user.Id}", user);
         }
 
         [HttpPost("logout")]
@@ -76,9 +92,13 @@ namespace react_Api.Controllers
         {
             var refreshToken = Request.Cookies["token"];
 
-            await tokenRepository.DeleteToken(refreshToken);
+            if (refreshToken is not null)
+            {
+                await databaseContext.Database.ExecuteSqlInterpolatedAsync(
+                    $"DELETE FROM [Tokens] WHERE [RefreshToken] LIKE {refreshToken}");
 
-            Response.Cookies.Delete("token");
+                Response.Cookies.Delete("token");
+            }
 
             return NoContent();
         }
@@ -93,24 +113,37 @@ namespace react_Api.Controllers
                 return Unauthorized();
             }
 
-            var dbToken = await tokenRepository.GetToken(cookieToken);
-            var valid = JwtService.ValidateToken(cookieToken, refreshTokenKey);
-            if (!valid || dbToken is null)
+            var dbToken = await databaseContext.Tokens
+                .AsNoTracking()
+                .Include(x => x.User)
+                .ThenInclude(x => x.Role)
+                .FirstOrDefaultAsync(x => x.RefreshToken == cookieToken);
+
+            if (dbToken is null)
             {
                 Response.Cookies.Delete("token");
+
                 return Unauthorized();
             }
 
-            var user = await userRepository.Get(dbToken.UserId);
+            var valid = JwtService.ValidateToken(dbToken.RefreshToken, refreshTokenKey);
 
-            GenerateTokens(user, out string accessToken, out string refreshToken);
-
-            await tokenRepository.SaveToken(user.Id, refreshToken);
-
-            Response.Cookies.Append("token", refreshToken, new Microsoft.AspNetCore.Http.CookieOptions
+            if (!valid)
             {
-                MaxAge = TimeSpan.FromDays(30)
-            });
+                databaseContext.Tokens.Remove(dbToken);
+                await databaseContext.SaveChangesAsync();
+
+                Response.Cookies.Delete("token");
+
+                return Unauthorized();
+            }
+
+            var accessToken = JwtService.Generate(
+                           dbToken.User.Id,
+                           dbToken.User.Email,
+                           dbToken.User.Role.Name,
+                           accessTokenKey,
+                           DateTime.Now.AddMinutes(15));
 
             return Ok(new { token = accessToken });
         }

@@ -1,8 +1,16 @@
-import { LOADING_OFF, LOADING_ON } from '../types';
+import { HIDE_ALERT, SHOW_ALERT } from './../types';
 
-export const loadingOn = () => { 
-    return { type: LOADING_ON } 
+export const showAlert = (message: string) => {
+    return {
+        type: SHOW_ALERT,
+        payload: {
+            message
+        }
+    } 
 }
-export const loadingOff = () => { 
-    return { type: LOADING_OFF } 
+
+export const hideAlert = () => { 
+    return { 
+        type: HIDE_ALERT 
+    }
 }

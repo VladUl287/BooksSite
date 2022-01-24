@@ -8,6 +8,7 @@ import reportWebVitals from './reportWebVitals';
 import { BrowserRouter } from 'react-router-dom';
 import { rootReducer } from './redux/rootReducer';
 import { createStore, compose, applyMiddleware } from 'redux';
+import { ToastProvider } from 'react-toast-notifications';
 
 const store = createStore(
   rootReducer,
@@ -21,7 +22,9 @@ ReactDOM.render(
   <React.StrictMode>
     <BrowserRouter>
       <Provider store={store}>
-        <App />
+        <ToastProvider autoDismiss={true}>
+          <App />
+        </ToastProvider>
       </Provider>
     </BrowserRouter>
   </React.StrictMode>,

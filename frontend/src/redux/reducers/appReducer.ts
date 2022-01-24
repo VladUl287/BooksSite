@@ -1,19 +1,21 @@
-import { LOADING_OFF, LOADING_ON } from '../types';
+import { HIDE_ALERT, SHOW_ALERT } from '../types';
 
 const initialState = {
-    isLoading: false
+    alert: null
 }
 
-export const appReducer = (state = initialState, action: { type: string }) => {
-    const { type } = action;
+export const appReducer = (state = initialState, action: { type: string, payload: { message: string } }) => {
+    const { type, payload } = action;
     switch (type) {
-        case LOADING_ON:
+        case SHOW_ALERT:
             return {
-                isLoading: true
+                ...state,
+                alert: payload.message
             }
-        case LOADING_OFF:
+        case HIDE_ALERT:
             return {
-                isLoading: false
+                ...state,
+                alert: null
             }
         default:
             return state;
