@@ -16,7 +16,9 @@ export const authReducer = (state = initialState, action: { type: string, payloa
             return {
                 ...state,
                 user: {
-                    email: user.email
+                    id: user.id,
+                    email: user.email,
+                    role: user.role
                 },
                 isAuth: true
             }

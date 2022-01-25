@@ -1,8 +1,8 @@
-﻿using System;
-using System.Text;
-using System.Security.Claims;
-using Microsoft.IdentityModel.Tokens;
+﻿using Microsoft.IdentityModel.Tokens;
+using System;
 using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 
 namespace react_Api.Services
 {
@@ -21,8 +21,8 @@ namespace react_Api.Services
             };
 
             var securityToken = new JwtSecurityToken(
-                claims: claims, 
-                expires: expires, 
+                claims: claims,
+                expires: expires,
                 signingCredentials: credentialsAccess);
 
             return new JwtSecurityTokenHandler().WriteToken(securityToken);

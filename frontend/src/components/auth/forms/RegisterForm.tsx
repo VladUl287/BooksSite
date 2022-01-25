@@ -43,10 +43,12 @@ const RegisterForm: FC<RegisterFormProps> = (props: RegisterFormProps) => {
                 />
                 {props.errors.password &&
                     <span className='text-error'>
-                        буквы латинского алфавита,цифры
+                        буквы латинского алфавита и цифры
                     </span>}
             </div>
-            <input type='submit' value='Зарегистрироваться' />
+            <button type='submit' disabled={props.load} >
+                {props.load ? <span className='loading'></span> : <span>Зарегистрироваться</span>}
+            </button>
         </form>
     );
 }

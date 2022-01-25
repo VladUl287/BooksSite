@@ -1,0 +1,26 @@
+.books-wrap {
+    margin: 0 5%;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+}
+
+.book {
+    margin: 25px;
+    padding: 10px;
+    height: fit-content;
+    border: 1px solid gray;
+}
+
+.cover img {
+    border: 2px solid gray;
+    width: 100%;
+}
+
+.book p {
+    margin: 5px 0 0 0;
+    font-size: 20px;
+}
+
+.book .author {
+    font-size: 15px;
+}

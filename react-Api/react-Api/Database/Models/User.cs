@@ -9,6 +9,7 @@ namespace react_Api.Database.Models
         public string Email { get; set; }
         public int RoleId { get; set; }
         public Role Role { get; set; }
+
         [JsonIgnore]
         public string Password { get; set; }
     }

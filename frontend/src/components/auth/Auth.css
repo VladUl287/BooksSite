@@ -1,7 +1,7 @@
 .forms-wrapper {
     display: flex;
     width: 40%;
-    max-width: 400px;
+    max-width: 360px;
     min-width: 270px;
     align-items: center;
     height: 100vh;
@@ -9,7 +9,7 @@
 
     --main-color: #f8fcff;
     --main-gray: #ffffff80;
-    --error: red;
+    --error: #e20000;
 }
 
 .forms {
@@ -93,7 +93,8 @@ form .text-error {
 }
 
 form button {
-    min-width: 100px;
+    min-height: 31px;
+    min-width: 200px;
     border-radius: 2em;
     padding: .3em 1.5em;
     border: none;
@@ -101,13 +102,14 @@ form button {
     margin: 0 auto;
     cursor: pointer;
     font-size: medium;
+    user-select: none;
 }
 
 .loading {
     display: block;
     margin: 0 auto;
-    width: 1.5em;
-    height: 1.5em;
+    width: 1.3em;
+    height: 1.3em;
     border-radius: 50%;
     color: #3c50fa;
     border: 2px solid currentColor;

@@ -22,7 +22,10 @@ ReactDOM.render(
   <React.StrictMode>
     <BrowserRouter>
       <Provider store={store}>
-        <ToastProvider autoDismiss={true}>
+        <ToastProvider
+          autoDismissTimeout={3000}
+          autoDismiss={true}
+        >
           <App />
         </ToastProvider>
       </Provider>

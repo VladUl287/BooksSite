@@ -32,6 +32,7 @@ const AuthContainer: FC = () => {
         dispatch(userLogin(data.email, data.password))
             .then(() => {
                 navigate('/home');
+                setLoad(false);
             })
             .catch((error: any) => {
                 addToast(error.response.data.error, {
@@ -42,6 +43,7 @@ const AuthContainer: FC = () => {
     }
 
     const submitRegister = async (data: FormValues) => {
+        setLoad(true);
         try {
             await authService.register(data.email, data.login, data.password);
             setToggle(false);
@@ -50,8 +52,9 @@ const AuthContainer: FC = () => {
             addToast(error.response.data.error, {
                 appearance: 'error'
             });
+        } finally {
+            setLoad(false);
         }
-
     }
 
     if (localStorage.getItem('token')) {

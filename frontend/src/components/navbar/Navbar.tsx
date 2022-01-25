@@ -1,10 +1,12 @@
 import './Navbar.css';
-import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
+import { IState } from "../../models/IState";
+import { useDispatch, useSelector } from "react-redux";
 import { userLogout } from "../../redux/actions/authActions";
 
 const Navbar = () => {
     const dispatch = useDispatch();
+    const email = useSelector((state: IState) => state.auth.user.email);
 
     const submitLogout = () => {
         dispatch(userLogout());
@@ -21,7 +23,7 @@ const Navbar = () => {
                         <Link to="/books">Книги</Link>
                     </li>
                     <li className="right">
-                        <button onClick={submitLogout}>Выход</button>
+                        <button onClick={submitLogout}>{email}</button>
                     </li>
                 </ul>
             </nav>

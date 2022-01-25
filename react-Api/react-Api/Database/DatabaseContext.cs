@@ -1,17 +1,28 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using react_Api.Database.Models;
+using System;
+using System.Diagnostics;
 
 namespace react_Api.Database
 {
-    public class DatabaseContext: DbContext
+    public class DatabaseContext : DbContext
     {
-        public DatabaseContext(DbContextOptions<DatabaseContext> options): base(options)
+        public DatabaseContext(DbContextOptions<DatabaseContext> options) : base(options)
         {
             Database.EnsureCreated();
         }
 
         public DbSet<User> Users { get; set; }
         public DbSet<Token> Tokens { get; set; }
+
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            optionsBuilder.LogTo((string message) =>
+            {
+                Console.WriteLine(message);
+                Debug.WriteLine(message);
+            });
+        }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -22,6 +33,9 @@ namespace react_Api.Database
                 build.Property(e => e.Email)
                     .IsRequired()
                     .HasMaxLength(150);
+
+                build.HasIndex(e => e.Email)
+                    .IsUnique();
 
                 build.Property(e => e.Login)
                     .IsRequired()

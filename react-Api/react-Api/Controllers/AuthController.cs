@@ -1,12 +1,13 @@
-﻿using System;
-using react_Api.Models;
-using react_Api.Services;
-using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
-using react_Api.Database.Models;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using react_Api.Database;
-using Microsoft.EntityFrameworkCore;
+using react_Api.Database.Models;
+using react_Api.Models;
+using react_Api.Services;
+using System;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace react_Api.Controllers
 {
@@ -14,7 +15,7 @@ namespace react_Api.Controllers
     [ApiController]
     public class AuthController : ControllerBase
     {
-        private readonly DatabaseContext databaseContext;
+        private readonly DatabaseContext dbContext;
         private readonly string passwordKey = string.Empty;
         private readonly string accessTokenKey = string.Empty;
         private readonly string refreshTokenKey = string.Empty;
@@ -23,7 +24,7 @@ namespace react_Api.Controllers
             DatabaseContext databaseContext,
             IConfiguration configuration)
         {
-            this.databaseContext = databaseContext;
+            this.dbContext = databaseContext;
             passwordKey = configuration.GetValue<string>("Secrets:PasswordSecret");
             accessTokenKey = configuration.GetValue<string>("Secrets:JwtAccessSecret");
             refreshTokenKey = configuration.GetValue<string>("Secrets:JwtRefreshSecret");
@@ -32,24 +33,29 @@ namespace react_Api.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginModel login)
         {
-            var user = await databaseContext.Users
+            var user = await dbContext.Users
                 .AsNoTracking()
-                .Include(x => x.Role)
+                .Select(x => new
+                {
+                    x.Id,
+                    x.Email,
+                    x.Password,
+                    Role = x.Role.Name,
+                })
                 .FirstOrDefaultAsync(x => x.Email == login.Email);
 
             var hashPassword = HashService.Hash(login.Password, passwordKey);
 
             if (user is not null && user.Password == hashPassword)
             {
-                GenerateTokens(user, out string accessToken, out string refreshToken);
+                GenerateTokens(user.Id, user.Email, user.Role, out string accessToken, out string refreshToken);
 
-                await databaseContext.Tokens
-                    .AddAsync(new Token
-                    {
-                        UserId = user.Id,
-                        RefreshToken = refreshToken
-                    });
-                await databaseContext.SaveChangesAsync();
+                await dbContext.Tokens.AddAsync(new Token
+                {
+                    UserId = user.Id,
+                    RefreshToken = refreshToken
+                });
+                await dbContext.SaveChangesAsync();
 
                 Response.Cookies.Append("token", refreshToken, new Microsoft.AspNetCore.Http.CookieOptions
                 {
@@ -65,7 +71,7 @@ namespace react_Api.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegisterModel register)
         {
-            var exists = await databaseContext.Users
+            var exists = await dbContext.Users
                 .AnyAsync(e => e.Email == register.Email);
 
             if (exists)
@@ -81,10 +87,10 @@ namespace react_Api.Controllers
                 RoleId = 2
             };
 
-            await databaseContext.AddAsync(user);
-            await databaseContext.SaveChangesAsync();
+            await dbContext.AddAsync(user);
+            await dbContext.SaveChangesAsync();
 
-            return CreatedAtAction($"user/{user.Id}", user);
+            return CreatedAtAction("Register", user);
         }
 
         [HttpPost("logout")]
@@ -94,7 +100,7 @@ namespace react_Api.Controllers
 
             if (refreshToken is not null)
             {
-                await databaseContext.Database.ExecuteSqlInterpolatedAsync(
+                await dbContext.Database.ExecuteSqlInterpolatedAsync(
                     $"DELETE FROM [Tokens] WHERE [RefreshToken] LIKE {refreshToken}");
 
                 Response.Cookies.Delete("token");
@@ -113,10 +119,15 @@ namespace react_Api.Controllers
                 return Unauthorized();
             }
 
-            var dbToken = await databaseContext.Tokens
+            var dbToken = await dbContext.Tokens
                 .AsNoTracking()
-                .Include(x => x.User)
-                .ThenInclude(x => x.Role)
+                .Select(x => new
+                {
+                    x.UserId,
+                    x.User.Email,
+                    x.RefreshToken,
+                    RoleName = x.User.Role.Name
+                })
                 .FirstOrDefaultAsync(x => x.RefreshToken == cookieToken);
 
             if (dbToken is null)
@@ -130,38 +141,36 @@ namespace react_Api.Controllers
 
             if (!valid)
             {
-                databaseContext.Tokens.Remove(dbToken);
-                await databaseContext.SaveChangesAsync();
+                await dbContext.Database.ExecuteSqlInterpolatedAsync(
+                   $"DELETE FROM [Tokens] WHERE [RefreshToken] LIKE {dbToken.RefreshToken}");
 
                 Response.Cookies.Delete("token");
 
                 return Unauthorized();
             }
 
-            var accessToken = JwtService.Generate(
-                           dbToken.User.Id,
-                           dbToken.User.Email,
-                           dbToken.User.Role.Name,
-                           accessTokenKey,
-                           DateTime.Now.AddMinutes(15));
+            GenerateTokens(dbToken.UserId, dbToken.Email, dbToken.RoleName, out string accessToken, out string refreshToken);
+
+            await dbContext.Database.ExecuteSqlInterpolatedAsync(
+                $"UPDATE [Tokens] SET [RefreshToken] = {dbToken.RefreshToken} WHERE [Id] = {dbToken.UserId}");
 
             return Ok(new { token = accessToken });
         }
 
-        private void GenerateTokens(User user, out string accessToken, out string refreshToken)
+        private void GenerateTokens(int id, string email, string role, out string accessToken, out string refreshToken)
         {
             accessToken = JwtService.Generate(
-                            user.Id,
-                            user.Email,
-                            user.Role.Name,
+                            id,
+                            email,
+                            role,
                             accessTokenKey,
                             DateTime.Now.AddMinutes(15));
             refreshToken = JwtService.Generate(
-                            user.Id,
-                            user.Email,
-                            user.Role.Name,
+                            id,
+                            email,
+                            role,
                             refreshTokenKey,
-                            DateTime.Now.AddDays(30));
+                            DateTime.Now.AddDays(15));
         }
     }
 }

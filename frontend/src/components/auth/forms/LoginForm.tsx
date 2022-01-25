@@ -30,8 +30,8 @@ const LoginForm: FC<LoginFormProps> = (props: LoginFormProps) => {
                         обязательное поле
                     </span>}
             </div>
-            <button type='submit'>
-                <span className={props.load ? 'loading' : ''}>{props.load ? <></> : 'Войти'}</span>
+            <button type='submit' disabled={props.load} >
+                {props.load ? <span className='loading'></span> : <span>Войти</span>}
             </button>
         </form>
     );
