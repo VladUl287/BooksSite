@@ -10,9 +10,11 @@ import { rootReducer } from './redux/rootReducer';
 import { createStore, compose, applyMiddleware } from 'redux';
 import { ToastProvider } from 'react-toast-notifications';
 
+const composeEnhancers = (window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+
 const store = createStore(
   rootReducer,
-  compose(
+  composeEnhancers(
     applyMiddleware(
       thunk
     )
