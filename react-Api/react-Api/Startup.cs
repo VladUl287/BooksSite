@@ -1,3 +1,6 @@
+using api.Database;
+using api.Services;
+using api.Services.Contract;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.CookiePolicy;
@@ -9,7 +12,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using react_Api.Database;
 using System;
 using System.Text;
 
@@ -50,6 +52,8 @@ namespace react_Api
                       IssuerSigningKey = new SymmetricSecurityKey(key),
                   };
               });
+
+            services.AddScoped<IAuthService, AuthService>();
 
             services.AddSwaggerGen(opt =>
             {

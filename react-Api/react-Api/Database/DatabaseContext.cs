@@ -1,9 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore;
-using react_Api.Database.Models;
+﻿using api.Database.Models;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Diagnostics;
 
-namespace react_Api.Database
+namespace api.Database
 {
     public class DatabaseContext : DbContext
     {

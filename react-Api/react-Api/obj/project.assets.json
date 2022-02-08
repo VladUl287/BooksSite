@@ -2,7 +2,7 @@
   "version": 3,
   "targets": {
     "net6.0": {
-      "AutoMapper/11.0.0": {
+      "AutoMapper/11.0.1": {
         "type": "package",
         "dependencies": {
           "Microsoft.CSharp": "4.7.0"
@@ -429,6 +429,15 @@
           }
         }
       },
+      "OneOf/3.0.211": {
+        "type": "package",
+        "compile": {
+          "lib/netstandard2.0/OneOf.dll": {}
+        },
+        "runtime": {
+          "lib/netstandard2.0/OneOf.dll": {}
+        }
+      },
       "Swashbuckle.AspNetCore/6.2.3": {
         "type": "package",
         "dependencies": {
@@ -709,15 +718,15 @@
     }
   },
   "libraries": {
-    "AutoMapper/11.0.0": {
-      "sha512": "+596AnKykYCk9RxXCEF4GYuapSebQtFVvIA1oVG1rrRkCLAC7AkWehJ0brCfYUbdDW3v1H/p0W3hob7JoXGjMw==",
+    "AutoMapper/11.0.1": {
+      "sha512": "WIadGC1pIwbnyTubvI577p3F++Bsj9q2Q3OaAc1I0QS+JhupN1xkdrPBhI9bPIeg63zM81tZplUNYkqU1HE5jQ==",
       "type": "package",
-      "path": "automapper/11.0.0",
+      "path": "automapper/11.0.1",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
         "README.md",
-        "automapper.11.0.0.nupkg.sha512",
+        "automapper.11.0.1.nupkg.sha512",
         "automapper.nuspec",
         "icon.png",
         "lib/netstandard2.1/AutoMapper.dll",
@@ -1485,6 +1494,21 @@
         "version.txt"
       ]
     },
+    "OneOf/3.0.211": {
+      "sha512": "c1VHL1J28sUmolUK0tJXF9LI9sUoCkx/VgADGY972/nIf3/nmSoJs5eYYq9zXhzEyWFGhc4123qWgsn0D6zZXQ==",
+      "type": "package",
+      "path": "oneof/3.0.211",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "lib/net35/OneOf.dll",
+        "lib/net45/OneOf.dll",
+        "lib/netstandard1.3/OneOf.dll",
+        "lib/netstandard2.0/OneOf.dll",
+        "oneof.3.0.211.nupkg.sha512",
+        "oneof.nuspec"
+      ]
+    },
     "Swashbuckle.AspNetCore/6.2.3": {
       "sha512": "cnzQDn0Le+hInsw2SYwlOhOCPXpYi/szcvnyqZJ12v+QyrLBwAmWXBg6RIyHB18s/mLeywC+Rg2O9ndz0IUNYQ==",
       "type": "package",
@@ -2055,10 +2079,11 @@
   },
   "projectFileDependencyGroups": {
     "net6.0": [
-      "AutoMapper >= 11.0.0",
+      "AutoMapper >= 11.0.1",
       "AutoMapper.Extensions.Microsoft.DependencyInjection >= 11.0.0",
       "Microsoft.AspNetCore.Authentication.JwtBearer >= 6.0.1",
       "Microsoft.EntityFrameworkCore.SqlServer >= 6.0.1",
+      "OneOf >= 3.0.211",
       "Swashbuckle.AspNetCore >= 6.2.3",
       "System.IdentityModel.Tokens.Jwt >= 6.15.1"
     ]
@@ -2069,11 +2094,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Temp\\react-test\\react-Api\\react-Api\\react-Api.csproj",
-      "projectName": "react-Api",
-      "projectPath": "C:\\Temp\\react-test\\react-Api\\react-Api\\react-Api.csproj",
+      "projectUniqueName": "C:\\Temp\\asp.net--react--auth\\react-Api\\react-Api\\Api.csproj",
+      "projectName": "Api",
+      "projectPath": "C:\\Temp\\asp.net--react--auth\\react-Api\\react-Api\\Api.csproj",
       "packagesPath": "C:\\Users\\User\\.nuget\\packages\\",
-      "outputPath": "C:\\Temp\\react-test\\react-Api\\react-Api\\obj\\",
+      "outputPath": "C:\\Temp\\asp.net--react--auth\\react-Api\\react-Api\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\User\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -2104,7 +2129,7 @@
         "dependencies": {
           "AutoMapper": {
             "target": "Package",
-            "version": "[11.0.0, )"
+            "version": "[11.0.1, )"
           },
           "AutoMapper.Extensions.Microsoft.DependencyInjection": {
             "target": "Package",
@@ -2117,6 +2142,10 @@
           "Microsoft.EntityFrameworkCore.SqlServer": {
             "target": "Package",
             "version": "[6.0.1, )"
+          },
+          "OneOf": {
+            "target": "Package",
+            "version": "[3.0.211, )"
           },
           "Swashbuckle.AspNetCore": {
             "target": "Package",

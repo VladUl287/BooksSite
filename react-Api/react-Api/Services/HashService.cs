@@ -2,7 +2,7 @@
 using System;
 using System.Text;
 
-namespace react_Api.Services
+namespace api.Services
 {
     public static class HashService
     {

@@ -1,15 +1,15 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Temp\\asp.net--react--auth\\react-Api\\react-Api\\react-Api.csproj": {}
+    "C:\\Temp\\asp.net--react--auth\\react-Api\\react-Api\\Api.csproj": {}
   },
   "projects": {
-    "C:\\Temp\\asp.net--react--auth\\react-Api\\react-Api\\react-Api.csproj": {
+    "C:\\Temp\\asp.net--react--auth\\react-Api\\react-Api\\Api.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Temp\\asp.net--react--auth\\react-Api\\react-Api\\react-Api.csproj",
-        "projectName": "react-Api",
-        "projectPath": "C:\\Temp\\asp.net--react--auth\\react-Api\\react-Api\\react-Api.csproj",
+        "projectUniqueName": "C:\\Temp\\asp.net--react--auth\\react-Api\\react-Api\\Api.csproj",
+        "projectName": "Api",
+        "projectPath": "C:\\Temp\\asp.net--react--auth\\react-Api\\react-Api\\Api.csproj",
         "packagesPath": "C:\\Users\\User\\.nuget\\packages\\",
         "outputPath": "C:\\Temp\\asp.net--react--auth\\react-Api\\react-Api\\obj\\",
         "projectStyle": "PackageReference",
@@ -42,7 +42,7 @@
           "dependencies": {
             "AutoMapper": {
               "target": "Package",
-              "version": "[11.0.0, )"
+              "version": "[11.0.1, )"
             },
             "AutoMapper.Extensions.Microsoft.DependencyInjection": {
               "target": "Package",
@@ -55,6 +55,10 @@
             "Microsoft.EntityFrameworkCore.SqlServer": {
               "target": "Package",
               "version": "[6.0.1, )"
+            },
+            "OneOf": {
+              "target": "Package",
+              "version": "[3.0.211, )"
             },
             "Swashbuckle.AspNetCore": {
               "target": "Package",
