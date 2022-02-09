@@ -1,6 +1,6 @@
-﻿using api.Domain.Entities;
+﻿using System.Collections.Generic;
 
-namespace api.Database.Models
+namespace api.Domain.Entities
 {
     public class User : BaseEntity
     {
@@ -9,5 +9,6 @@ namespace api.Database.Models
         public int RoleId { get; set; }
         public Role Role { get; set; }
         public string Password { get; set; }
+        public ICollection<BookRating> BooksRatings { get; set; }
     }
 }

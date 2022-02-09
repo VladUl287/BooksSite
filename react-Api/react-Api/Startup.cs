@@ -30,6 +30,8 @@ namespace react_Api
         {
             services.AddCors();
 
+            services.AddAutoMapper(typeof(Startup));
+
             services.AddDbContext<DatabaseContext>(opt =>
             {
                 opt.UseSqlServer(configuration.GetConnectionString("DefaultConnection"));
@@ -54,6 +56,7 @@ namespace react_Api
               });
 
             services.AddScoped<IAuthService, AuthService>();
+            services.AddScoped<IBookService, BookService>();
 
             services.AddSwaggerGen(opt =>
             {

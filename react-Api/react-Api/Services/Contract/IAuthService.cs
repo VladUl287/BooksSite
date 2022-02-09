@@ -1,4 +1,4 @@
-﻿using api.Database.Models;
+﻿using api.Domain.Entities;
 using api.Models;
 using api.ViewModels;
 using OneOf;

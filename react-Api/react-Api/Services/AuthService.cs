@@ -1,5 +1,6 @@
 ﻿using api.Database;
 using api.Database.Models;
+using api.Domain.Entities;
 using api.Models;
 using api.Services.Contract;
 using api.ViewModels;

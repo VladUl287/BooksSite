@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Temp\\asp.net--react--auth\\react-Api\\react-Api\\Api.csproj": {}
+    "C:\\Temp\\book-site\\react-Api\\react-Api\\Api.csproj": {}
   },
   "projects": {
-    "C:\\Temp\\asp.net--react--auth\\react-Api\\react-Api\\Api.csproj": {
+    "C:\\Temp\\book-site\\react-Api\\react-Api\\Api.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Temp\\asp.net--react--auth\\react-Api\\react-Api\\Api.csproj",
+        "projectUniqueName": "C:\\Temp\\book-site\\react-Api\\react-Api\\Api.csproj",
         "projectName": "Api",
-        "projectPath": "C:\\Temp\\asp.net--react--auth\\react-Api\\react-Api\\Api.csproj",
+        "projectPath": "C:\\Temp\\book-site\\react-Api\\react-Api\\Api.csproj",
         "packagesPath": "C:\\Users\\User\\.nuget\\packages\\",
-        "outputPath": "C:\\Temp\\asp.net--react--auth\\react-Api\\react-Api\\obj\\",
+        "outputPath": "C:\\Temp\\book-site\\react-Api\\react-Api\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\User\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -50,15 +50,19 @@
             },
             "Microsoft.AspNetCore.Authentication.JwtBearer": {
               "target": "Package",
-              "version": "[6.0.1, )"
+              "version": "[6.0.2, )"
             },
             "Microsoft.EntityFrameworkCore.SqlServer": {
               "target": "Package",
-              "version": "[6.0.1, )"
+              "version": "[6.0.2, )"
             },
             "OneOf": {
               "target": "Package",
               "version": "[3.0.211, )"
+            },
+            "SixLabors.ImageSharp": {
+              "target": "Package",
+              "version": "[2.0.0, )"
             },
             "Swashbuckle.AspNetCore": {
               "target": "Package",

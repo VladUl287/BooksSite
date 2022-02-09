@@ -1,6 +1,6 @@
 ﻿using api.Domain.Entities;
 
-namespace api.Database.Models
+namespace api.Domain.Entities
 {
     public class Role : BaseEntity
     {
